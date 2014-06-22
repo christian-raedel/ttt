@@ -102,7 +102,7 @@
             },
             watch: {
                 default: {
-                    files: ['Gruntfile.js', 'app/**/*'],
+                    files: ['Gruntfile.js', 'index.html', 'app/**/*'],
                     tasks: ['default'],
                     options: {
                         spawn: false,
