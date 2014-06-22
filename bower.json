@@ -1,0 +1,28 @@
+{
+  "name": "tic-tac-toe",
+  "version": "0.0.1",
+  "authors": [
+    "Christian Rädel <christian.raedel@gmail.com>"
+  ],
+  "description": "A simple demo game.",
+  "main": "app.js",
+  "keywords": [
+    "demo"
+  ],
+  "license": "MIT",
+  "homepage": "http://sonnenkarma.de",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.2.18",
+    "reset-css": "~2.0.20110126",
+    "font-awesome": "~4.1.0",
+    "jquery": "~2.1.1"
+  }
+}
