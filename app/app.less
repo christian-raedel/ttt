@@ -11,6 +11,8 @@ html, body {
     height: 100%;
     font-family: "Henny Penny";
     font-size: 1em;
+    color: white;
+    background-color: darkgray;
 }
 
 body {
@@ -21,13 +23,22 @@ body {
 
     &>header {
         flex: 3 0 20%;
+        align-items: baseline;
         margin: @margin;
         padding: @padding;
+        color: darkred;
+        background-color: darkgray;
         display: flex;
+
+        &>nav {
+            flex: 1 0 auto;
+            justify-content: flex-end;
+            display: flex;
+        }
     }
 
     &>article {
-        flex: 6 0 75%;
+        flex: 6 0 70%;
         margin: @margin;
         padding: 0;
         align-self: center;
@@ -37,9 +48,28 @@ body {
     }
 
     &>footer {
-        flex: 1 0 5%;
+        flex: 1 0 10%;
         margin: @margin;
         padding: @padding;
         display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+h3 {
+    font-size: 1.5em;
+}
+
+h2 {
+    font-size: 3em;
+}
+
+a {
+    cursor: pointer;
+    transition: all 2.4s ease-in-out;
+
+    &:hover {
+        border-bottom: 1px solid darkred;
     }
 }

@@ -1,3 +1,6 @@
-<div class="field-grid" ng-repeat="row in field track by $index">
-    <field-piece ng-repeat="col in row track by $index" state="col"></field-piece>
+<div class="field-grid">
+    <div class="field-row" ng-repeat="(rowKey, row) in field track by $index">
+        <field-piece ng-repeat="(columnKey, col) in row track by $index"
+                     row="rowKey" col="columnKey" state="col"></field-piece>
+    </div>
 </div>

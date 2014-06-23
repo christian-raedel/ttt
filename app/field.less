@@ -1,11 +1,34 @@
 .field-grid {
-    flex: 1 0 auto;
+    flex: 1 0 33%;
     display: flex;
     flex-direction: column;
+}
+
+.field-row {
+    flex: 1 0 auto;
+    display: flex;
 }
 
 .field-piece {
     flex: 1 0 33%;
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: @padding;
     border: 3px solid black;
+    color: white;
+    cursor: pointer;
+
+    &.neutral {
+        background-color: gray;
+    }
+
+    &.ai-field {
+        background-color: darkred;
+    }
+
+    &.player-field {
+        background-color: blue;
+    }
 }
