@@ -63,7 +63,7 @@
                 unit: {
                     options: {
                         frameworks: ['jasmine'],
-                        singleRun: false,
+                        singleRun: true,
                         files: [
                             'build/_libs.js',
                             'build/_templates.js',
@@ -71,7 +71,7 @@
                             'bower_components/angular-mocks/angular-mocks.js',
                             'app/**/*.spec.js'
                         ],
-                        browsers: ['Chrome']
+                        browsers: ['PhantomJS']
                     }
                 }
             },
@@ -136,6 +136,6 @@
         });
 
         grunt.registerTask('common', ['clean', 'ngtemplates', 'concat', 'less']);
-        grunt.registerTask('default', ['common', 'copy',  'notify', 'watch']);
+        grunt.registerTask('default', ['common', 'karma', 'copy',  'notify', 'watch']);
     };
 }());

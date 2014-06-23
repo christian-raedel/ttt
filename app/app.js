@@ -8,9 +8,9 @@
 
   function AppController($rootScope, $scope) {
       function generateField(rows, cols) {
-          var field = {};
+          var field = [];
           for (var i = 0; i < rows; i++) {
-              field[i] = {};
+              field[i] = [];
               for (var j = 0; j < cols; j++) {
                   field[i][j] = 0;
               }

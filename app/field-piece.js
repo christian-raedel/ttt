@@ -16,14 +16,16 @@
         }
 
         function linkFn(scope, elem, attrs) {
+            console.debug(scope.state);
+
             scope.setState = function(state) {
                 if (scope.state === 0) {
                     scope.state = state;
                 }
             };
 
-            scope.getStateSymbol = function(state) {
-                switch (state) {
+            scope.getStateSymbol = function() {
+                switch (scope.state) {
                     case 1:
                         return 'O';
                     break;
