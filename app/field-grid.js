@@ -1,20 +1,25 @@
 (function () {
-  'use strict';
+    'use strict';
 
-  angular.module('app.fieldGrid', [])
-  .directive('fieldGrid', FieldGrid);
+    angular.module('app.fieldGrid', [
+        'app.fieldPiece'
+    ]).directive('fieldGrid', FieldGrid);
 
-  function FieldGrid() {
-    return {
-      restrict: 'E',
-      templateUrl: 'field-grid.tpl.html',
-      scope: {
-        state: '='
-      },
-      link: linkFn
+    function FieldGrid() {
+        return {
+            restrict: 'E',
+            replace: true,
+            templateUrl: 'app/field-grid.tpl.html',
+            scope: {
+                field: '='
+            },
+            link: linkFn
+        }
+
+        function linkFn(scope, elem, attrs) {
+            if (!scope.field) {
+                throw new Error('field attribute expected');
+            }
+        }
     }
-
-    function linkFn(scope, elem, attrs) {
-    }
-  }
 }());

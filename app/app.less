@@ -1,4 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Trade+Winds|Henny+Penny|Gochi+Hand);
+@margin: 0;
+@padding: 10px;
 
 * {
     box-sizing: border-box;
@@ -9,4 +11,35 @@ html, body {
     height: 100%;
     font-family: "Henny Penny";
     font-size: 1em;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    margin: @margin;
+    padding: @padding;
+
+    &>header {
+        flex: 3 0 20%;
+        margin: @margin;
+        padding: @padding;
+        display: flex;
+    }
+
+    &>article {
+        flex: 6 0 75%;
+        margin: @margin;
+        padding: 0;
+        align-self: center;
+        width: 33%;
+        border: 3px solid black;
+        display: flex;
+    }
+
+    &>footer {
+        flex: 1 0 5%;
+        margin: @margin;
+        padding: @padding;
+        display: flex;
+    }
 }

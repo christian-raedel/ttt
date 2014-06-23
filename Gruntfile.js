@@ -38,6 +38,7 @@
                     src: [
                         'bower_components/jquery/dist/jquery.js',
                         'bower_components/angular/angular.js',
+                        'bower_components/angular-ui-router/release/angular-ui-router.js'
                     ],
                     dest: 'build/_libs.js'
                 },
@@ -62,9 +63,15 @@
                 unit: {
                     options: {
                         frameworks: ['jasmine'],
-                        singleRun: true,
-                        files: ['app/**/*.spec.js'],
-                        browsers: ['PhantomJS']
+                        singleRun: false,
+                        files: [
+                            'build/_libs.js',
+                            'build/_templates.js',
+                            'build/_app.js',
+                            'bower_components/angular-mocks/angular-mocks.js',
+                            'app/**/*.spec.js'
+                        ],
+                        browsers: ['Chrome']
                     }
                 }
             },
@@ -129,6 +136,6 @@
         });
 
         grunt.registerTask('common', ['clean', 'ngtemplates', 'concat', 'less']);
-        grunt.registerTask('default', ['common', 'karma', 'copy',  'notify', 'watch']);
+        grunt.registerTask('default', ['common', 'copy',  'notify', 'watch']);
     };
 }());
