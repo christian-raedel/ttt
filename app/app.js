@@ -18,40 +18,83 @@
             }
             $scope.field = field;
         }
-        $scope.generateField(3, 3);
+
+        $rootScope.field = $scope.field;
 
         $scope.player = {
             1: {
                 name: 'A.I.',
                 score: 0,
-                isHuman: false
+                isHuman: false,
+                isMatchBeginner: false,
+                isMatchWinner: false
             },
             2: {
                 name: 'Player',
                 score: 0,
-                isHuman: true
+                isHuman: true,
+                isMatchBeginner: false,
+                isMatchWinner: false
             }
         };
 
-        $rootScope.$on('onStateChange', function(ev, obj) {
-            $scope.field[obj.row][obj.col] = obj.state;
-            $scope.matchWinner = calculateMatch($scope.field);
-            console.debug($scope.field);
+        $scope.setMatchWinner = function(key, isMatchWinner) {
+            $scope.player[key].isMatchWinner = isMatchWinner;
+        };
+
+        $scope.setMatchBeginner = function() {
+            var beginner = Math.floor((Math.random() * Object.keys($scope.player).length) + 1);
+            Object.keys($scope.player).forEach(function(key) {
+                $scope.player[key].isMatchBeginner = false;
+            });
+            $scope.player[beginner].isMatchBeginner = true;
+            if (!$scope.player[beginner].isHuman) {
+                var obj = findNextFreeField($scope.field);
+                angular.extend(obj, {state: beginner});
+                $scope.$emit('onStateChange', obj);
+            }
+            console.debug('matchBeginner', beginner);
+        };
+
+        $scope.resetField = function() {
+            Object.keys($scope.player).forEach(function(key) {
+                $scope.setMatchWinner(key, false);
+            });
+            $scope.generateField(3, 3);
+            $scope.setMatchBeginner();
+        };
+        $scope.resetField();
+
+        $rootScope.$watchCollection('field', function(newValue, oldValue) {
+            if (newValue !== oldValue) {
+                var matchWinner = calculateMatchWinner(newValue);
+                if (matchWinner) {
+                    Object.keys($scope.player).forEach(function(key) {
+                        $scope.setMatchWinner(key, false);
+                    });
+                    $scope.setMatchWinner(matchWinner, true);
+                }
+            }
         });
 
-        function calculateMatch(field) {
+        function calculateMatchWinner(field) {
             for (var row = 0; row < field.length; row++) {
                 for (var col = 0; col < field[row].length; col++) {
-                    if ((field[row][col] === field[row + 1][col] &&
-                         field[row][col] === field[row + 2][col]) ||
-                        (field[row][col] === field[row][col + 1] &&
-                         field[row][col] === field[row][col + 2]) ||
-                        (field[row][col] === field[row + 1][col + 1] &&
-                         field[row][col] === field[row + 2][col + 2])) {
-                        return field[row][col];
+                    if (field[row][col] > 0) {
+                        if ((field[row][col] === field[row + 1][col] &&
+                             field[row][col] === field[row + 2][col]) ||
+                            (field[row][col] === field[row][col + 1] &&
+                             field[row][col] === field[row][col + 2]) ||
+                            (field[row][col] === field[row + 1][col + 1] &&
+                             field[row][col] === field[row + 2][col + 2]) ||
+                            (field[row][col] === field[row + 1][col - 1] &&
+                             field[row][col] === field[row + 2][col - 2])) {
+                            return field[row][col];
+                        }
                     }
                 }
             }
+            return null;
         }
     }
 }());

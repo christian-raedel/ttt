@@ -4,7 +4,7 @@
     angular.module('app.fieldPiece', [])
     .directive('fieldPiece', FieldPiece);
 
-    function FieldPiece() {
+    function FieldPiece($rootScope) {
         return {
             restrict: 'E',
             replace: true,
@@ -12,20 +12,18 @@
             scope: {
                 row: '=',
                 col: '=',
-                state: '='
             },
             link: linkFn
         }
 
         function linkFn(scope, elem, attrs) {
+            scope.state = $rootScope.field[scope.row][scope.col];
+
+            console.debug(scope.row, scope.col, scope.state);
+
             scope.setState = function(state) {
                 if (scope.state === 0) {
                     scope.state = state;
-                    scope.$emit('onStateChange', {
-                        row: scope.row,
-                        col: scope.col,
-                        state: scope.state
-                    });
                 }
             };
 
