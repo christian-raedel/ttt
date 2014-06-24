@@ -38,7 +38,7 @@
                     src: [
                         'bower_components/jquery/dist/jquery.js',
                         'bower_components/angular/angular.js',
-                        'bower_components/angular-ui-router/release/angular-ui-router.js'
+                        'libs/autobahn.js'
                     ],
                     dest: 'build/_libs.js'
                 },
@@ -62,7 +62,7 @@
             karma: {
                 unit: {
                     options: {
-                        frameworks: ['jasmine'],
+                        frameworks: ['mocha', 'chai'],
                         singleRun: true,
                         files: [
                             'build/_libs.js',

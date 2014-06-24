@@ -1,7 +1,8 @@
 <!doctype html>
-<html ng-app="app">
+<html lang="en" ng-app="app">
     <head>
         <title>tic-tac-toe</title>
+        <meta charset="utf-8">
         <link rel="stylesheet" href="css/reset.css">
         <link rel="stylesheet" href="css/font-awesome.min.css">
         <link rel="stylesheet" href="css/style.css">
@@ -10,13 +11,16 @@
         <header>
             <h3>tic-tac-toe</h3>
             <nav>
-                <a class="button" ng-click="resetField()">new game</a>
+                <input ng-model="playername" placeholder="player name" required>
+                <input ng-model="matchname" placeholder="game name" required>
+                <a ng-click="createGame(playername, matchname)">create game</a>
+                <a ng-click="joinGame(playername)">join game</a>
             </nav>
         </header>
         <article>
-            <player-info player="player[1]"></player-info>
-            <field-grid field="field"></field-grid>
-            <player-info player="player[2]"></player-info>
+            <player-info playername="match['1']" is-human="false"></player-info>
+            <field-grid field="match.field"></field-grid>
+            <player-info playername="match['2']" is-human="true"></player-info>
         </article>
         <footer>
             <p>Created by <em>Christian Rädel</em> &copy;2014</p>

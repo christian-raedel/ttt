@@ -17,9 +17,11 @@
         }
 
         function linkFn(scope, elem, attrs) {
+            /*
             if (!scope.field) {
                 throw new Error('field attribute expected');
             }
+            */
         }
     }
 }());

@@ -9,12 +9,18 @@
             restrict: 'E',
             templateUrl: 'app/player-info.tpl.html',
             scope: {
-                player: '='
+                playername: '=',
+                isHuman: '='
             },
             link: linkFn
         };
 
         function linkFn(scope, elem, attrs) {
+            /*
+            if (!scope.playername) {
+                throw new Error('playername attribute expected');
+            }
+            */
         }
     }
 }());

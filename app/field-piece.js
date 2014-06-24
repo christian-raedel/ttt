@@ -17,7 +17,7 @@
         }
 
         function linkFn(scope, elem, attrs) {
-            scope.state = $rootScope.field[scope.row][scope.col];
+            scope.state = $rootScope.match.field[scope.row][scope.col];
 
             console.debug(scope.row, scope.col, scope.state);
 
