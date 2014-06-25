@@ -10,17 +10,16 @@
     function AppController($rootScope, $scope, WampService) {
         function onSubscriptionEvent(args) {
             $scope.matchlist = args[0];
-            /*
-            if ($scope.matchlist.hasProperty($scope.matchname)) {
+            if ($scope.matchlist.hasOwnProperty($scope.matchname)) {
                 $rootScope.match = $scope.matchlist[$scope.matchname];
             } else {
-                Object.keys($scope.matchlist).forEach(function(match) {
-                    if (match.player1 === $scope.playername || match.player2 === $scope.playername) {
+                Object.keys($scope.matchlist).forEach(function(matchname) {
+                    if ($scope.matchlist[matchname].player1 === $scope.playername ||
+                        $scope.matchlist[matchname].player2 === $scope.playername) {
                         $rootScope.match = match;
                     }
                 });
             }
-            */
         }
 
         $scope.init = function() {
@@ -61,6 +60,20 @@
             });
         };
 
+        $scope.cancelGame = function(matchname) {
+            WampService.call('del2', [matchname])
+            .then(function(args) {
+                $scope.matchlist = args[0];
+                if (!$scope.matchlist.hasOwnProperty(matchname)) {
+                    $rootScope.match = null;
+                } else {
+                    $rootScope.match = $scope.matchlist[matchname];
+                }
+            }, function(err) {
+                throw err;
+            });
+        };
+
         $scope.$watch('matchname', function(newValue, oldValue) {
             if (newValue !== oldValue && $scope.matchlist.hasOwnProperty(newValue)) {
                 $rootScope.match = $scope.matchlist[newValue];
@@ -70,8 +83,16 @@
         $rootScope.$watch('match', function(newValue, oldValue) {
             if (newValue !== oldValue) {
                 $scope.match = newValue;
+                $scope.matchlist[$scope.matchname] = $scope.match;
+                WampService.publish([$scope.matchlist]);
             }
         }, true);
+
+        $scope.$watch('playername', function(newValue, oldValue) {
+            if (newValue !== oldValue) {
+                $rootScope.playername = newValue;
+            }
+        });
 
         function calculateMatchWinner(field) {
             for (var row = 0; row < field.length; row++) {

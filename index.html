@@ -9,12 +9,13 @@
     </head>
     <body ng-controller="appController">
         <header>
-            <h3>tic-tac-toe</h3>
+            <h2>tic-tac-toe</h2>
             <nav>
                 <input ng-model="playername" placeholder="player name" required>
                 <input ng-model="matchname" placeholder="game name" required>
                 <a ng-click="createGame(playername, matchname)">create game</a>
                 <a ng-click="joinGame(playername)">join game</a>
+                <a ng-click="cancelGame(matchname)">cancel game</a>
             </nav>
         </header>
         <article>

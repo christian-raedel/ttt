@@ -28,6 +28,7 @@ connection.onopen = function(session) {
             var match = {
                 player1: args[0],
                 player2: null,
+                next: Math.floor((Math.random() * 2) + 1),
                 field: generateField(3, 3),
                 created: new Date()
             };
@@ -42,6 +43,12 @@ connection.onopen = function(session) {
                 }
             });
             debug(matchlist);
+            return [matchlist];
+        },
+        del2: function(args) {
+            if (matchlist[matchname]) {
+                delete matchlist[matchname];
+            }
             return [matchlist];
         }
     }

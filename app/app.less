@@ -1,5 +1,5 @@
 @import url(https://fonts.googleapis.com/css?family=Trade+Winds|Henny+Penny|Gochi+Hand);
-@margin: 0;
+@margin: 5px;
 @padding: 10px;
 
 * {
@@ -15,36 +15,50 @@ html, body {
     background-color: darkgray;
 }
 
+html {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 body {
     display: flex;
     flex-direction: column;
     margin: @margin;
     padding: @padding;
+    max-width: 800px;
 
     &>header {
-        flex: 3 0 20%;
-        align-items: baseline;
+        flex: 3 0 25%;
         margin: @margin;
         padding: @padding;
         color: darkred;
         background-color: darkgray;
         display: flex;
+        flex-direction: column;
+
+        &>h2 {
+            flex: 1 0 50%;
+            margin-bottom: @margin;
+            padding: @padding;
+        }
 
         &>nav {
-            flex: 1 0 auto;
+            flex: 1 0 50%;
+            align-self: center;
             display: flex;
             align-items: baseline;
-            justify-content: flex-end;
+            justify-content: center;
 
             &>* {
                 margin: @margin;
-                padding: @padding;
+                padding: 5px @padding;
             }
         }
     }
 
     &>article {
-        flex: 6 0 70%;
+        flex: 6 0 65%;
         margin: @margin;
         padding: 0;
         align-self: center;
@@ -83,6 +97,6 @@ a {
 }
 
 input {
-    font-family: "Henny Penny";
+    font-family: "Trade Winds";
     font-size: 1em;
 }

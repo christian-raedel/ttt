@@ -52,7 +52,6 @@ describe('WampService', function() {
 
     it('should subscribe to matchlist', function(done) {
         function onEvent(args) {
-            console.debug(args);
             expect(args[0]).to.be.ok;
             done();
         }
