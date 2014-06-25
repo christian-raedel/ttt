@@ -136,6 +136,6 @@
         });
 
         grunt.registerTask('common', ['clean', 'ngtemplates', 'concat', 'less']);
-        grunt.registerTask('default', ['common', 'karma', 'copy',  'notify', 'watch']);
+        grunt.registerTask('default', ['common', 'copy',  'notify', 'watch']);
     };
 }());

@@ -17,15 +17,22 @@
 
         connection.onopen = function(session) {
             console.debug('wamp session opened', session);
+            session.prefix('ttt', 'de.sonnenkarma.demos.ttt');
             service.session.resolve(session);
         }
 
         connection.open();
 
+        service.open = function() {
+            if (!connection.isOpen) {
+                connection.open();
+            }
+        };
+
         service.call = function(name, args) {
             var defer = $q.defer();
             service.session.promise.then(function(session) {
-                defer.resolve(session.call('ttt.' + name, args));
+                defer.resolve(session.call('ttt:' + name, args));
             });
             return defer.promise;
         };
@@ -33,7 +40,7 @@
         service.publish = function(args) {
             var defer = $q.defer();
             service.session.promise.then(function(session) {
-                defer.resolve(session.publish('matchlist', args, {}, {acknowledge: true}));
+                defer.resolve(session.publish('ttt:matchlist', args, {}, {acknowledge: true}));
             });
             return defer.promise;
         };
@@ -41,7 +48,7 @@
         service.subscribe = function(onEvent) {
             var defer = $q.defer();
             service.session.promise.then(function(session) {
-                defer.resolve(session.subscribe('matchlist', onEvent));
+                defer.resolve(session.subscribe('ttt:matchlist', onEvent));
             });
             return defer.promise;
         };

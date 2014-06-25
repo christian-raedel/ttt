@@ -1,6 +1,6 @@
 .player-info {
-    width: 180px;
-    height: 100%;
+    flex: 1 0 20%;
+    max-height: 120px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -8,21 +8,22 @@
 
     &.ai {
         background-color: darkred;
+
+        &>h2 {
+            //transform: rotate(180deg);
+        }
     }
 
     &.human {
         background-color: blue;
+
+        &>h2 {
+            //transform: rotate(-90deg);
+        }
     }
 
     &>* {
         padding: @padding;
-    }
-
-    &>h2 {
-    }
-
-    &>h3 {
-        border-radius: 45%;
     }
 
     transition: all 2.4s linear;

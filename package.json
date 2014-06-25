@@ -2,7 +2,7 @@
   "name": "tic-tac-toe",
   "version": "0.0.1",
   "scripts": {
-      "start": "DEBUG=* nodemon -i app -i build -i public --debug-brk server.js",
+      "start": "DEBUG=* cd server&&forever -w server.js",
       "test": "grunt --force"
   },
   "devDependencies": {

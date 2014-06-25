@@ -2,7 +2,8 @@
     'use strict';
 
     angular.module('app.fieldGrid', [
-        'app.fieldPiece'
+        'app.fieldPiece',
+        'app.playerInfo'
     ]).directive('fieldGrid', FieldGrid);
 
     function FieldGrid() {
@@ -11,17 +12,12 @@
             replace: true,
             templateUrl: 'app/field-grid.tpl.html',
             scope: {
-                field: '='
+                match: '='
             },
             link: linkFn
         }
 
         function linkFn(scope, elem, attrs) {
-            /*
-            if (!scope.field) {
-                throw new Error('field attribute expected');
-            }
-            */
         }
     }
 }());

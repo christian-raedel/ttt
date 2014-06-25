@@ -7,20 +7,16 @@
     function PlayerInfo() {
         return {
             restrict: 'E',
+            replace: true,
             templateUrl: 'app/player-info.tpl.html',
             scope: {
-                playername: '=',
+                playerName: '=',
                 isHuman: '='
             },
             link: linkFn
         };
 
         function linkFn(scope, elem, attrs) {
-            /*
-            if (!scope.playername) {
-                throw new Error('playername attribute expected');
-            }
-            */
         }
     }
 }());

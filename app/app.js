@@ -4,7 +4,6 @@
     angular.module('app', [
         'app.templates',
         'app.fieldGrid',
-        'app.playerInfo',
         'app.WampService'
     ]).controller('appController', AppController);
 
@@ -16,7 +15,7 @@
                 $rootScope.match = $scope.matchlist[$scope.matchname];
             } else {
                 Object.keys($scope.matchlist).forEach(function(match) {
-                    if (match['1'] === $scope.playername || match['2'] === $scope.playername) {
+                    if (match.player1 === $scope.playername || match.player2 === $scope.playername) {
                         $rootScope.match = match;
                     }
                 });
@@ -52,7 +51,7 @@
             .then(function(args) {
                 $scope.matchlist = args[0];
                 Object.keys($scope.matchlist).forEach(function(matchname) {
-                    if ($scope.matchlist[matchname]['2'] === playername) {
+                    if ($scope.matchlist[matchname].player2 === playername) {
                         $rootScope.match = $scope.matchlist[matchname];
                         $scope.matchname = matchname;
                     }

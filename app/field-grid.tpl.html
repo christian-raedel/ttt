@@ -1,6 +1,10 @@
-<div class="field-grid">
-    <div class="field-row" ng-repeat="(rowKey, row) in field track by $index">
-        <field-piece ng-repeat="(columnKey, col) in row track by $index"
-                     row="rowKey" col="columnKey" state="col"></field-piece>
+<section class="field">
+    <player-info player-name="match.player1" is-human="false"></player-info>
+    <div class="field-grid">
+        <div class="field-row" ng-repeat="(rowKey, row) in match.field track by $index">
+            <field-piece ng-repeat="(columnKey, col) in row track by $index"
+                         row="rowKey" col="columnKey" state="col"></field-piece>
+        </div>
     </div>
-</div>
+    <player-info player-name="match.player2" is-human="true"></player-info>
+</section>
