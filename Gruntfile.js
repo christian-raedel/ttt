@@ -71,7 +71,7 @@
                             'bower_components/angular-mocks/angular-mocks.js',
                             'app/**/*.spec.js'
                         ],
-                        browsers: ['PhantomJS']
+                        browsers: ['Chrome']
                     }
                 }
             },

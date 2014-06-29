@@ -4,9 +4,10 @@
     angular.module('app.WampService', [])
     .factory('WampService', WampService);
 
-    function WampService($q) {
-        var service = {
-            session: $q.defer()
+    function WampService($rootScope, $q) {
+        var defer = $q.defer()
+            , service = {
+            session: defer.promise
         };
 
         var connection = new autobahn.Connection({
@@ -16,23 +17,23 @@
         });
 
         connection.onopen = function(session) {
-            console.debug('wamp session opened', session);
-            session.prefix('ttt', 'de.sonnenkarma.demos.ttt');
-            service.session.resolve(session);
+            //console.debug('wamp session opened', session);
+            $rootScope.$apply(function() {
+                session.prefix('ttt', 'de.sonnenkarma.demos.ttt');
+                defer.resolve(session);
+            });
         }
 
         connection.open();
 
-        service.open = function() {
-            if (!connection.isOpen) {
-                connection.open();
-            }
-        };
-
         service.call = function(name, args) {
             var defer = $q.defer();
-            service.session.promise.then(function(session) {
-                defer.resolve(session.call('ttt:' + name, args));
+            service.session.then(function(session) {
+                session.call('ttt:' + name, args).then(function(args) {
+                    $rootScope.$apply(function() {
+                        defer.resolve(args);
+                    });
+                });
             });
             return defer.promise;
         };

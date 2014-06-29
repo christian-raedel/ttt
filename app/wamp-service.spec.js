@@ -1,33 +1,48 @@
 describe('WampService', function() {
-    var $rootScope, WampService = null;
+    this.timeout(5000);
+
+    var $rootScope, $timeout, WampService = null;
 
     beforeEach(function() {
         module('app.WampService');
-        inject(function(_$rootScope_, _WampService_) {
+        inject(function(_$rootScope_, _$timeout_, _WampService_) {
             $rootScope = _$rootScope_;
+            $timeout = _$timeout_;
             WampService = _WampService_;
         });
     });
 
     it('should has callable functions', function() {
-        expect(WampService.open).to.be.a('function');
         expect(WampService.call).to.be.a('function');
         expect(WampService.publish).to.be.a('function');
         expect(WampService.subscribe).to.be.a('function');
         expect(WampService.unsubscribe).to.be.a('function');
     });
 
+    it('should pass async', function(done) {
+        $timeout(done, 250);
+        $timeout.flush();
+    });
+
     it('should be connected to a wamp server', function(done) {
-        WampService.open();
-        var isOpen = false;
-        var promise = WampService.session.promise.then(function(session) {
-            isOpen = session.isOpen;
-        }, function(err) {
-            done(err);
+        WampService.session.then(function(session) {
+            expect(session.isOpen).to.be.true;
+            done();
+        }, done);
+        $rootScope.$apply();
+    });
+
+    it('should create a match', function(done) {
+        WampService.session.then(function(session) {
+            session.call('ttt:add2', ['user1', 'testmatch'])
+            .then(function(args) {
+                expect(args[0]).to.be.ok;
+                var matchlist = args[0];
+                expect(matchlist['testmatch'].player1).to.be.equal('user1');
+                done();
+            }, done);
         });
         $rootScope.$apply();
-        expect(isOpen).to.be.true;
-        done();
     });
 
     it('should create a match', function(done) {
@@ -37,9 +52,8 @@ describe('WampService', function() {
             var matchlist = args[0];
             expect(matchlist['testmatch'].player1).to.be.equal('user1');
             done();
-        }, function(err) {
-            done(err);
-        });
+        }, done);
+        $rootScope.$apply();
     });
 
     it('should join a match', function(done) {
