@@ -34,6 +34,7 @@ connection.onopen = function(session) {
             };
             matchlist[args[1]] = match;
             debug(matchlist);
+            publish();
             return [matchlist];
         },
         find2: function(args) {
@@ -43,12 +44,14 @@ connection.onopen = function(session) {
                 }
             });
             debug(matchlist);
+            publish();
             return [matchlist];
         },
         del2: function(args) {
-            if (matchlist[matchname]) {
-                delete matchlist[matchname];
+            if (matchlist[args[0]]) {
+                delete matchlist[args[0]];
             }
+            publish();
             return [matchlist];
         }
     }

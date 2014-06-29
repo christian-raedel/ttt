@@ -118,6 +118,17 @@
                         },
                         livereloadOnError: false
                     }
+                },
+                test: {
+                    files: ['Gruntfile.js', 'index.html', 'app/**/*'],
+                    tasks: ['test'],
+                    options: {
+                        spawn: false,
+                        livereload: {
+                            port: 27000
+                        },
+                        livereloadOnError: false
+                    }
                 }
             }
         });
@@ -135,7 +146,9 @@
             grunt.loadNpmTasks(task);
         });
 
-        grunt.registerTask('common', ['clean', 'ngtemplates', 'concat', 'less']);
-        grunt.registerTask('default', ['common', 'copy',  'notify', 'watch']);
+        grunt.registerTask('preTest', ['clean', 'ngtemplates', 'concat', 'less']);
+        grunt.registerTask('postTest', ['copy',  'notify']);
+        grunt.registerTask('test', ['preTest', 'karma', 'postTest', 'watch:test']);
+        grunt.registerTask('default', ['preTest', 'postTest', 'watch:default']);
     };
 }());

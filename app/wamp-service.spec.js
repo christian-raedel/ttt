@@ -1,9 +1,10 @@
 describe('WampService', function() {
-    var WampService = null;
+    var $rootScope, WampService = null;
 
     beforeEach(function() {
         module('app.WampService');
-        inject(function(_WampService_) {
+        inject(function(_$rootScope_, _WampService_) {
+            $rootScope = _$rootScope_;
             WampService = _WampService_;
         });
     });
@@ -18,12 +19,15 @@ describe('WampService', function() {
 
     it('should be connected to a wamp server', function(done) {
         WampService.open();
-        WampService.session.promise.then(function(session) {
-            expect(session.isOpen).to.be.true;
-            done();
+        var isOpen = false;
+        var promise = WampService.session.promise.then(function(session) {
+            isOpen = session.isOpen;
         }, function(err) {
             done(err);
         });
+        $rootScope.$apply();
+        expect(isOpen).to.be.true;
+        done();
     });
 
     it('should create a match', function(done) {
