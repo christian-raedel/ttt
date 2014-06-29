@@ -9,89 +9,97 @@
 
     function AppController($rootScope, $scope, WampService) {
         function onSubscriptionEvent(args) {
-            $scope.matchlist = args[0];
-            if ($scope.matchlist.hasOwnProperty($scope.matchname)) {
-                $rootScope.match = $scope.matchlist[$scope.matchname];
-            } else {
-                Object.keys($scope.matchlist).forEach(function(matchname) {
-                    if ($scope.matchlist[matchname].player1 === $scope.playername ||
-                        $scope.matchlist[matchname].player2 === $scope.playername) {
-                        $rootScope.match = match;
-                    }
-                });
-            }
+            $scope.$apply(function() {
+                $scope.matchlist = args[0];
+                if ($scope.matchlist.hasOwnProperty($scope.matchname)) {
+                    $scope.match = $scope.matchlist[$scope.matchname];
+                } else {
+                    Object.keys($scope.matchlist).forEach(function(matchname) {
+                        if ($scope.matchlist[matchname].player1 === $scope.playername ||
+                            $scope.matchlist[matchname].player2 === $scope.playername) {
+                            $scope.match = $scope.matchlist[matchname];
+                        }
+                    });
+                }
+                $rootScope.$broadcast('onMatchUpdated', $scope.match, $scope.playername);
+            });
+            console.debug('matchlist received');
         }
 
         $scope.init = function() {
-            WampService.subscribe(onSubscriptionEvent)
-            .then(function(subscription) {
-                $scope.subscription = subscription;
-            }, function(err) {
-                console.error(err);
+            WampService.then(function(session) {
+                session.subscribe('ttt:matchlist', onSubscriptionEvent)
+                .then(function(subscription) {
+                    $scope.subscription = subscription;
+                }, function(err) {
+                    console.error('error while subscribing to matchlist', err);
+                });
             });
 
             $scope.matchlist = {};
-            $rootScope.match = {};
+            $scope.match = {};
         };
         $scope.init();
 
         $scope.createGame = function(playername, matchname) {
-            WampService.call('add2', [playername, matchname])
-            .then(function(args) {
-                $scope.matchlist = args[0];
-                $rootScope.match = $scope.matchlist[matchname];
-            }, function(err) {
-                throw err;
+            WampService.then(function(session) {
+                session.call('ttt:add2', [playername, matchname])
+                .catch(function(err) {
+                    console.error('error while creating game', err);
+                });
             });
         };
 
         $scope.joinGame = function(playername) {
-            WampService.call('find2', [playername])
-            .then(function(args) {
-                $scope.matchlist = args[0];
-                Object.keys($scope.matchlist).forEach(function(matchname) {
-                    if ($scope.matchlist[matchname].player2 === playername) {
-                        $rootScope.match = $scope.matchlist[matchname];
-                        $scope.matchname = matchname;
-                    }
+            WampService.then(function(session) {
+                session.call('ttt:find2', [playername])
+                .catch(function(err) {
+                    console.error('error while joining game', err);
                 });
-            }, function(err) {
-                throw err;
             });
         };
 
         $scope.cancelGame = function(matchname) {
-            WampService.call('del2', [matchname])
-            .then(function(args) {
-                $scope.matchlist = args[0];
-                if (!$scope.matchlist.hasOwnProperty(matchname)) {
-                    $rootScope.match = null;
-                } else {
-                    $rootScope.match = $scope.matchlist[matchname];
-                }
-            }, function(err) {
-                throw err;
+            WampService.then(function(session) {
+                session.call('ttt:del2', [matchname])
+                .then(function() {
+                    if (!$scope.matchlist.hasOwnProperty(matchname)) {
+                        $scope.match = null;
+                    } else {
+                        $scope.match = $scope.matchlist[matchname];
+                        $rootScope.$broadcast('onMatchUpdated', $scope.match, $scope.playername);
+                    }
+                }, function(err) {
+                    console.error('error while cancelling game', err);
+                });
+            });
+        };
+
+        $scope.updateGame = function() {
+            WampService.then(function(session) {
+                session.publish('ttt:matchlist', [$scope.matchlist], {}, {acknowledge: true})
+                .then(function(publication) {
+                    console.debug('matchlist published');
+                }, function(err) {
+                    console.error('error while updating game', err);
+                });
             });
         };
 
         $scope.$watch('matchname', function(newValue, oldValue) {
             if (newValue !== oldValue && $scope.matchlist.hasOwnProperty(newValue)) {
-                $rootScope.match = $scope.matchlist[newValue];
+                $scope.match = $scope.matchlist[newValue];
             }
         });
 
-        $rootScope.$watch('match', function(newValue, oldValue) {
+        $scope.$watch('match', function(newValue, oldValue) {
             if (newValue !== oldValue) {
-                $scope.match = newValue;
-                $scope.matchlist[$scope.matchname] = $scope.match;
-                WampService.publish([$scope.matchlist]);
+                $scope.updateGame();
             }
         }, true);
 
-        $scope.$watch('playername', function(newValue, oldValue) {
-            if (newValue !== oldValue) {
-                $rootScope.playername = newValue;
-            }
+        $rootScope.$on('onFieldPieceChanged', function(ev, match) {
+            $scope.match = match;
         });
 
         function calculateMatchWinner(field) {

@@ -12,20 +12,13 @@ describe('WampService', function() {
         });
     });
 
-    it('should has callable functions', function() {
-        expect(WampService.call).to.be.a('function');
-        expect(WampService.publish).to.be.a('function');
-        expect(WampService.subscribe).to.be.a('function');
-        expect(WampService.unsubscribe).to.be.a('function');
-    });
-
     it('should pass async', function(done) {
         $timeout(done, 250);
         $timeout.flush();
     });
 
     it('should be connected to a wamp server', function(done) {
-        WampService.session.then(function(session) {
+        WampService.then(function(session) {
             expect(session.isOpen).to.be.true;
             done();
         }, done);
@@ -33,7 +26,7 @@ describe('WampService', function() {
     });
 
     it('should create a match', function(done) {
-        WampService.session.then(function(session) {
+        WampService.then(function(session) {
             session.call('ttt:add2', ['user1', 'testmatch'])
             .then(function(args) {
                 expect(args[0]).to.be.ok;
@@ -42,7 +35,7 @@ describe('WampService', function() {
                 done();
             }, done);
         });
-        $rootScope.$apply();
+        $rootScope.$digest();
     });
 
     it('should create a match', function(done) {

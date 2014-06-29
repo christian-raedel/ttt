@@ -35,7 +35,6 @@ connection.onopen = function(session) {
             matchlist[args[1]] = match;
             debug(matchlist);
             publish();
-            return [matchlist];
         },
         find2: function(args) {
             Object.keys(matchlist).forEach(function(matchname) {
@@ -45,14 +44,13 @@ connection.onopen = function(session) {
             });
             debug(matchlist);
             publish();
-            return [matchlist];
         },
         del2: function(args) {
             if (matchlist[args[0]]) {
                 delete matchlist[args[0]];
             }
+            debug(matchlist);
             publish();
-            return [matchlist];
         }
     }
 
@@ -66,7 +64,8 @@ connection.onopen = function(session) {
     });
 
     function publish() {
-        session.publish('ttt:matchlist', [matchlist]);
+        debug('publishing matchlist...');
+        session.publish('ttt:matchlist', [matchlist], {}, {acknowledge: true});
     }
 
     function onevent(args) {

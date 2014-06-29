@@ -18,31 +18,33 @@
         }
 
         function linkFn(scope, elem, attrs) {
-            scope.state = $rootScope.match.field[scope.row][scope.col];
-            scope.next = $rootScope.match.next;
-
-            $rootScope.$watch('playername', function(newValue, oldValue) {
-                if (newValue === $rootScope.match.player1) {
+            scope.$on('onMatchUpdated', function(ev, match, localPlayer) {
+                console.debug('onMatchUpdated');
+                scope.match = match;
+                scope.state = match.field[scope.row][scope.col];
+                scope.next = match.next;
+                if (scope.match.player1 === localPlayer) {
                     scope.localPlayer = 1;
                 } else {
                     scope.localPlayer = 2;
                 }
             });
 
-            scope.setState = function(state) {
-                console.debug(scope.localPlayer);
-                if ($rootScope.match.next !== scope.localPlayer) {
+            scope.setState = function() {
+                console.debug('setState');
+                if (scope.match.next !== scope.localPlayer) {
                     return;
                 }
                 if (scope.state === 0) {
-                    scope.state = state;
-                    $rootScope.match.field[scope.row][scope.col] = state;
-                    if ($rootScope.match.next === 1) {
-                        $rootScope.match.next = 2;
+                    scope.state = scope.localPlayer;
+                    scope.match.field[scope.row][scope.col] = scope.state;
+                    if (scope.match.next === 1) {
+                        scope.match.next = 2;
                     } else {
-                        $rootScope.match.next = 1;
+                        scope.match.next = 1;
                     }
-                    scope.next = $rootScope.match.next;
+                    scope.$emit('onFieldPieceChanged', scope.match);
+                    scope.next = scope.match.next;
                 }
             };
         }
