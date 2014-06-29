@@ -11,7 +11,8 @@
             templateUrl: 'app/player-info.tpl.html',
             scope: {
                 playerName: '=',
-                isHuman: '='
+                isHuman: '=',
+                isNext: '='
             },
             link: linkFn
         };

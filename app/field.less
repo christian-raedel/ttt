@@ -2,6 +2,7 @@
     flex: 1 0 100%;
     display: flex;
     flex-direction: column;
+    background-color: black;
 }
 
 .field-grid {
@@ -25,6 +26,7 @@
     border: 3px solid black;
     color: white;
     cursor: pointer;
+    transition: all 2.4s linear;
 
     &.neutral {
         background-color: gray;
@@ -36,5 +38,9 @@
 
     &.player-field {
         background-color: blue;
+    }
+
+    &.state-set {
+        cursor: not-allowed;
     }
 }
