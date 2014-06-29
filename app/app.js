@@ -75,7 +75,7 @@
             });
         };
 
-        $scope.updateGame = function() {
+        $scope.publishGame = function() {
             WampService.then(function(session) {
                 session.publish('ttt:matchlist', [$scope.matchlist], {}, {acknowledge: true})
                 .then(function(publication) {
@@ -94,11 +94,12 @@
 
         $scope.$watch('match', function(newValue, oldValue) {
             if (newValue !== oldValue) {
-                $scope.updateGame();
+                $scope.publishGame();
             }
         }, true);
 
         $rootScope.$on('onFieldPieceChanged', function(ev, match) {
+            match.winner = calculateMatchWinner(match.field);
             $scope.match = match;
         });
 
@@ -106,15 +107,19 @@
             for (var row = 0; row < field.length; row++) {
                 for (var col = 0; col < field[row].length; col++) {
                     if (field[row][col] > 0) {
-                        if ((field[row][col] === field[row + 1][col] &&
-                             field[row][col] === field[row + 2][col]) ||
-                            (field[row][col] === field[row][col + 1] &&
-                             field[row][col] === field[row][col + 2]) ||
-                            (field[row][col] === field[row + 1][col + 1] &&
-                             field[row][col] === field[row + 2][col + 2]) ||
-                            (field[row][col] === field[row + 1][col - 1] &&
-                             field[row][col] === field[row + 2][col - 2])) {
-                            return field[row][col];
+                        try {
+                            if ((field[row][col] === field[row + 1][col] &&
+                                 field[row][col] === field[row + 2][col]) ||
+                                (field[row][col] === field[row][col + 1] &&
+                                 field[row][col] === field[row][col + 2]) ||
+                                (field[row][col] === field[row + 1][col + 1] &&
+                                 field[row][col] === field[row + 2][col + 2]) ||
+                                (field[row][col] === field[row + 1][col - 1] &&
+                                 field[row][col] === field[row + 2][col - 2])) {
+                                return field[row][col];
+                            }
+                        } catch (err) {
+                            console.error(err);
                         }
                     }
                 }

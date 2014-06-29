@@ -12,7 +12,8 @@
             scope: {
                 playerName: '=',
                 isHuman: '=',
-                isNext: '='
+                isNext: '=',
+                isWinner: '='
             },
             link: linkFn
         };
