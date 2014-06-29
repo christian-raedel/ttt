@@ -1,10 +1,13 @@
 <section class="field">
     <player-info player-name="match.player1" is-human="false" is-next="match.next === 1"></player-info>
-    <div class="field-grid">
+    <div class="field-grid" ng-show="match.next">
         <div class="field-row" ng-repeat="(rowKey, row) in match.field track by $index">
             <field-piece ng-repeat="(columnKey, col) in row track by $index"
                          row="rowKey" col="columnKey"></field-piece>
         </div>
+    </div>
+    <div class="field-grid" ng-show="!match.next">
+        <h3>Please create or join a game!</h3>
     </div>
     <player-info player-name="match.player2" is-human="true" is-next="match.next === 2"></player-info>
 </section>
