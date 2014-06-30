@@ -1,0 +1,12 @@
+<div class="dialog" ng-show="show">
+    <section>
+        <header>
+            <h3>{{title}}</h3>
+        </header>
+        <article ng-transclude></article>
+        <footer>
+            <a ng-click="cancel()">Cancel</a>
+            <a ng-click="confirm()">Ok</a>
+        </footer>
+    </section>
+</div>

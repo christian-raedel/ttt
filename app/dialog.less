@@ -1,0 +1,81 @@
+div.dialog {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 265;
+    background-color: darkgray;
+    opacity: 0.88;
+    transition: all 2.4s linear;
+
+    &.ng-hide {
+        opacity: 0;
+        top: 20%;
+        bottom: 20%;
+        left: 40%;
+        right: 45%;
+    }
+
+    /*
+    &>* {
+        opacity: 1.0;
+    }
+    */
+
+    &>section {
+        position: absolute;
+        top: 20%;
+        bottom: 20%;
+        left: 40%;
+        right: 45%;
+        z-index: 270;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: black;
+        border: 1px solid orange;
+
+        &>header {
+            flex: 1 0 20%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            &>h3 {
+                font-family: "Trade Winds";
+                color: darkred;
+                margin: @margin;
+                padding: @padding;
+            }
+        }
+
+        &>article {
+            flex: 1 0 60%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        &>footer {
+            flex: 1 0 20%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+
+            &>a {
+                margin: @margin (@margin / 2);
+                padding: @padding;
+                color: darkred;
+                border: 1px solid darkred;
+
+                &:hover, &:active {
+                    color: orange;
+                    border: 1px solid orange;
+                }
+            }
+        }
+    }
+}

@@ -11,15 +11,24 @@
         <header>
             <h2>tic-tac-toe</h2>
             <nav>
-                <input ng-model="playername" placeholder="player name" required>
-                <input ng-model="matchname" placeholder="game name" required>
-                <a ng-click="createGame(playername, matchname)">create game</a>
-                <a ng-click="joinGame(playername)">join game</a>
-                <a ng-click="cancelGame(matchname)">cancel game</a>
+                <a ng-click="showCreateGame = true">create game</a>
+                <a ng-click="showJoinGame = true">join game</a>
+                <a ng-click="cancelGame(input.matchname)">cancel game</a>
             </nav>
         </header>
         <article>
             <field-grid match="match"></field-grid>
+            <dialog show="showCreateGame"
+                    title="Create a new game"
+                    on-confirm="createGame(input)">
+                <input ng-model="input.playername" placeholder="Player Name" required>
+                <input ng-model="input.matchname" placeholder="Game Name" required>
+            </dialog>
+            <dialog show="showJoinGame"
+                    title="Join an existing game"
+                    on-confirm="joinGame(input)">
+                <input ng-model="input.playername" placeholder="Player Name" required>
+            </dialog>
         </article>
         <footer>
             <p>Created by <em>Christian Rädel</em> &copy;2014</p>
