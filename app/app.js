@@ -5,25 +5,27 @@
         'app.templates',
         'app.fieldGrid',
         'app.dialog',
-        'app.WampService'
+        'app.wampService',
+        'app.sessionService'
     ]).controller('appController', AppController);
 
-    function AppController($rootScope, $scope, WampService) {
+    function AppController($rootScope, $scope, WampService, SessionService) {
         function onSubscriptionEvent(args) {
-            $scope.$apply(function() {
-                $scope.matchlist = args[0];
-                if ($scope.matchlist.hasOwnProperty($scope.input.matchname)) {
-                    $scope.match = $scope.matchlist[$scope.input.matchname];
-                } else {
-                    Object.keys($scope.matchlist).forEach(function(matchname) {
-                        if ($scope.matchlist[matchname].player1 === $scope.input.playername ||
-                            $scope.matchlist[matchname].player2 === $scope.input.playername) {
-                            $scope.match = $scope.matchlist[matchname];
-                        }
-                    });
-                }
-                $rootScope.$broadcast('onMatchUpdated', $scope.match, $scope.input.playername);
-            });
+            if (!$scope.input || angular.equals($scope.matchlist, args[0])) {
+                return;
+            }
+            $scope.matchlist = args[0];
+            if ($scope.matchlist.hasOwnProperty($scope.input.matchname)) {
+                $scope.match = $scope.matchlist[$scope.input.matchname];
+            } else {
+                Object.keys($scope.matchlist).forEach(function(matchname) {
+                    if ($scope.matchlist[matchname].player1 === $scope.input.playername ||
+                        $scope.matchlist[matchname].player2 === $scope.input.playername) {
+                        $scope.match = $scope.matchlist[matchname];
+                    }
+                });
+            }
+            $scope.updateBoard();
             console.debug('matchlist received');
         }
 
@@ -39,16 +41,17 @@
 
             $scope.matchlist = {};
             $scope.match = {};
+            $scope.input = SessionService.getSession({
+                playername: null,
+                matchname: null
+            });
         };
         $scope.init();
 
         $scope.createGame = function(input) {
-            $scope.input = input;
+            $scope.input = SessionService.setSession(input);
             WampService.then(function(session) {
                 session.call('ttt:add2', [input.playername, input.matchname])
-                .then(function() {
-                    $scope.showCreateGame = false;
-                })
                 .catch(function(err) {
                     console.error('error while creating game', err);
                 });
@@ -56,7 +59,7 @@
         };
 
         $scope.joinGame = function(input) {
-            $scope.input = input;
+            $scope.input = SessionService.setSession(input);
             WampService.then(function(session) {
                 session.call('ttt:find2', [input.playername])
                 .catch(function(err) {
@@ -66,7 +69,7 @@
         };
 
         $scope.cancelGame = function(input) {
-            $scope.input = input;
+            $scope.input = SessionService.setSession(input);
             WampService.then(function(session) {
                 session.call('ttt:del2', [input.matchname])
                 .then(function() {
@@ -74,7 +77,7 @@
                         $scope.match = null;
                     } else {
                         $scope.match = $scope.matchlist[input.matchname];
-                        $rootScope.$broadcast('onMatchUpdated', $scope.match, $scope.input.playername);
+                        $scope.updateBoard();
                     }
                 }, function(err) {
                     console.error('error while cancelling game', err);
@@ -93,6 +96,12 @@
             });
         };
 
+        $scope.updateBoard = function() {
+            $timeout(function() {
+                $scope.$broadcast('onMatchUpdated', [$scope.match, $scope.input.playername]);
+            }, 270);
+        };
+
         $scope.$watch('input.matchname', function(newValue, oldValue) {
             if (newValue !== oldValue && $scope.matchlist.hasOwnProperty(newValue)) {
                 $scope.match = $scope.matchlist[newValue];
@@ -106,32 +115,7 @@
         }, true);
 
         $rootScope.$on('onFieldPieceChanged', function(ev, match) {
-            match.winner = calculateMatchWinner(match.field);
             $scope.match = match;
         });
-
-        function calculateMatchWinner(field) {
-            for (var row = 0; row < field.length; row++) {
-                for (var col = 0; col < field[row].length; col++) {
-                    if (field[row][col] > 0) {
-                        try {
-                            if ((field[row][col] === field[row + 1][col] &&
-                                 field[row][col] === field[row + 2][col]) ||
-                                (field[row][col] === field[row][col + 1] &&
-                                 field[row][col] === field[row][col + 2]) ||
-                                (field[row][col] === field[row + 1][col + 1] &&
-                                 field[row][col] === field[row + 2][col + 2]) ||
-                                (field[row][col] === field[row + 1][col - 1] &&
-                                 field[row][col] === field[row + 2][col - 2])) {
-                                return field[row][col];
-                            }
-                        } catch (err) {
-                            console.error(err);
-                        }
-                    }
-                }
-            }
-            return null;
-        }
     }
 }());

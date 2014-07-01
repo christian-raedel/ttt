@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('app.WampService', [])
+    angular.module('app.wampService', [])
     .factory('WampService', WampService);
 
     function WampService($rootScope, $q) {

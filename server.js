@@ -2,15 +2,42 @@ var autobahn = require('autobahn')
     , q = require('q')
     , debug = require('debug')('ttt');
 
-function generateField(rows, cols) {
+var size = 3;
+
+function generateField() {
     var field = [];
-    for (var i = 0; i < rows; i++) {
+    for (var i = 0; i < size; i++) {
         field[i] = [];
-        for (var j = 0; j < cols; j++) {
-            field[i][j] = 0;
+        for (var j = 0; j < size; j++) {
+            field[i][j] = {
+                state: 0,
+                player: 0
+            };
         }
     }
     return field;
+}
+
+function calculateMatchWinner(match) {
+    if (!match.last) {
+        debug('cancelled calculation');
+        return null;
+    }
+    debug('calculate match winner');
+    for (var row = match.last.row - 1; row < match.last.col + 2; row++) {
+        for (var col = match.last.col - 1; col < match.last.col + 2; col++) {
+            match.field[row][col].state += 1;
+        }
+    }
+
+    for (var row = 0; row < size; row++) {
+        for (var col = 0; col < size; col++) {
+            if (match.field[row][col].state === size) {
+                return match.field[row][col].player;
+            }
+        }
+    }
+    return null;
 }
 
 var connection = new autobahn.Connection({
@@ -29,7 +56,9 @@ connection.onopen = function(session) {
                 player1: args[0],
                 player2: null,
                 next: Math.floor((Math.random() * 2) + 1),
-                field: generateField(3, 3),
+                last: null,
+                winner: null,
+                field: generateField(),
                 created: new Date()
             };
             matchlist[args[1]] = match;
@@ -65,6 +94,9 @@ connection.onopen = function(session) {
 
     function publish() {
         debug('publishing matchlist...');
+        Object.keys(matchlist).forEach(function(matchname) {
+            matchlist[matchname].winner = calculateMatchWinner(matchlist[matchname]);
+        });
         session.publish('ttt:matchlist', [matchlist], {}, {acknowledge: true});
     }
 

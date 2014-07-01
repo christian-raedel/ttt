@@ -25,6 +25,7 @@
     "font-awesome": "~4.1.0",
     "jquery": "~2.1.1",
     "angular-mocks": "~1.2.18",
-    "autobahnjs": "~0.9.3"
+    "autobahnjs": "~0.9.3",
+    "angular-cookies": "~1.2.18"
   }
 }

@@ -4,30 +4,24 @@
     angular.module('app.fieldPiece', [])
     .directive('fieldPiece', FieldPiece);
 
-    function FieldPiece($rootScope) {
+    function FieldPiece() {
         return {
             restrict: 'E',
             replace: true,
             templateUrl: 'app/field-piece.tpl.html',
             scope: {
                 row: '=',
-                col: '=',
-                player: '='
+                col: '='
             },
             link: linkFn
         }
 
         function linkFn(scope, elem, attrs) {
-            scope.$on('onMatchUpdated', function(ev, match, localPlayer) {
+            scope.$on('onMatchUpdated', function(ev, args) {
                 console.debug('onMatchUpdated');
-                scope.match = match;
-                scope.state = match.field[scope.row][scope.col];
-                scope.next = match.next;
-                if (scope.match.player1 === localPlayer) {
-                    scope.localPlayer = 1;
-                } else {
-                    scope.localPlayer = 2;
-                }
+                scope.match = args[0];
+                scope.field = scope.match.field[scope.row][scope.col];
+                scope.localPlayer = scope.match.player1 === args[1] ? 1 : 2;
             });
 
             scope.setState = function() {
@@ -35,16 +29,15 @@
                 if (scope.match.next !== scope.localPlayer) {
                     return;
                 }
-                if (scope.state === 0) {
-                    scope.state = scope.localPlayer;
-                    scope.match.field[scope.row][scope.col] = scope.state;
-                    if (scope.match.next === 1) {
-                        scope.match.next = 2;
-                    } else {
-                        scope.match.next = 1;
-                    }
+                if (scope.field.player === 0) {
+                    scope.field.player = scope.localPlayer;
+                    scope.match.field[scope.row][scope.col] = scope.field;
+                    scope.match.last = {
+                        row: scope.row,
+                        col: scope.col
+                    };
+                    scope.match.next = scope.match.next === 1 ? 2 : 1;
                     scope.$emit('onFieldPieceChanged', scope.match);
-                    scope.next = scope.match.next;
                 }
             };
         }

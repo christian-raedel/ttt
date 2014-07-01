@@ -38,6 +38,7 @@
                     src: [
                         'bower_components/jquery/dist/jquery.js',
                         'bower_components/angular/angular.js',
+                        'bower_components/angular-cookies/angular-cookies.js',
                         'libs/autobahn.js'
                     ],
                     dest: 'build/_libs.js'
@@ -109,7 +110,7 @@
             },
             watch: {
                 default: {
-                    files: ['Gruntfile.js', 'index.html', 'app/**/*'],
+                    files: ['Gruntfile.js', 'index.html', 'server.js', 'app/**/*'],
                     tasks: ['default'],
                     options: {
                         spawn: false,
