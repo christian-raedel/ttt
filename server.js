@@ -19,25 +19,31 @@ function generateField() {
 }
 
 function calculateMatchWinner(match) {
-    if (!match.last) {
+    if (match.last.row === null || match.last.col === null) {
         debug('cancelled calculation');
-        return null;
+        return 0;
     }
-    debug('calculate match winner');
-    for (var row = match.last.row - 1; row < match.last.col + 2; row++) {
-        for (var col = match.last.col - 1; col < match.last.col + 2; col++) {
-            match.field[row][col].state += 1;
-        }
-    }
-
-    for (var row = 0; row < size; row++) {
-        for (var col = 0; col < size; col++) {
-            if (match.field[row][col].state === size) {
-                return match.field[row][col].player;
+    try {
+        debug('calculate match winner');
+        for (var row = match.last.row - 1; row < match.last.col + 2; row++) {
+            for (var col = match.last.col - 1; col < match.last.col + 2; col++) {
+                if (row >= 0 && row < size && col >= 0 && col < size) {
+                    match.field[row][col].state += 1;
+                }
             }
         }
+
+        for (var row = 0; row < size; row++) {
+            for (var col = 0; col < size; col++) {
+                if (match.field[row][col].state === size) {
+                    return match.field[row][col].player;
+                }
+            }
+        }
+    } catch (err) {
+        debug('error on calculating matchwinner', err);
     }
-    return null;
+    return 0;
 }
 
 var connection = new autobahn.Connection({
@@ -56,8 +62,11 @@ connection.onopen = function(session) {
                 player1: args[0],
                 player2: null,
                 next: Math.floor((Math.random() * 2) + 1),
-                last: null,
-                winner: null,
+                last: {
+                    row: null,
+                    col: null
+                },
+                winner: 0,
                 field: generateField(),
                 created: new Date()
             };
@@ -96,6 +105,10 @@ connection.onopen = function(session) {
         debug('publishing matchlist...');
         Object.keys(matchlist).forEach(function(matchname) {
             matchlist[matchname].winner = calculateMatchWinner(matchlist[matchname]);
+            matchlist[matchname].last = {
+                row: null,
+                col: null
+            };
         });
         session.publish('ttt:matchlist', [matchlist], {}, {acknowledge: true});
     }

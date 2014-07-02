@@ -11,7 +11,11 @@
 
         service.setSession = function(session) {
             Object.keys(session).forEach(function(key) {
-                $cookieStore.put(key, session[key]);
+                if (!session[key]) {
+                    $cookieStore.remove(key);
+                } else {
+                    $cookieStore.put(key, session[key]);
+                }
             });
             return session;
         };

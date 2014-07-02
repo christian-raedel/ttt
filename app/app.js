@@ -9,9 +9,9 @@
         'app.sessionService'
     ]).controller('appController', AppController);
 
-    function AppController($rootScope, $scope, WampService, SessionService) {
+    function AppController($rootScope, $scope, $timeout, WampService, SessionService) {
         function onSubscriptionEvent(args) {
-            if (!$scope.input || angular.equals($scope.matchlist, args[0])) {
+            if ($scope.input.playername === null || angular.equals($scope.matchlist, args[0])) {
                 return;
             }
             $scope.matchlist = args[0];
@@ -22,10 +22,10 @@
                     if ($scope.matchlist[matchname].player1 === $scope.input.playername ||
                         $scope.matchlist[matchname].player2 === $scope.input.playername) {
                         $scope.match = $scope.matchlist[matchname];
+                        $scope.input.matchname = matchname;
                     }
                 });
             }
-            $scope.updateBoard();
             console.debug('matchlist received');
         }
 
@@ -77,7 +77,6 @@
                         $scope.match = null;
                     } else {
                         $scope.match = $scope.matchlist[input.matchname];
-                        $scope.updateBoard();
                     }
                 }, function(err) {
                     console.error('error while cancelling game', err);
@@ -99,7 +98,7 @@
         $scope.updateBoard = function() {
             $timeout(function() {
                 $scope.$broadcast('onMatchUpdated', [$scope.match, $scope.input.playername]);
-            }, 270);
+            });
         };
 
         $scope.$watch('input.matchname', function(newValue, oldValue) {
@@ -109,7 +108,8 @@
         });
 
         $scope.$watch('match', function(newValue, oldValue) {
-            if (newValue !== oldValue) {
+            if (newValue !== oldValue && !angular.equals(newValue, {})) {
+                $scope.updateBoard();
                 $scope.publishGame();
             }
         }, true);
