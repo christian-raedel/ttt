@@ -99,6 +99,12 @@
                         src: 'bower_components/font-awesome/css/font-awesome.min.css',
                         dest: 'public/css/font-awesome.min.css'
                     }]
+                },
+                deploy: {
+                    files: [{
+                        src: 'public',
+                        dest: '~/html/projects/ttt'
+                    }]
                 }
             },
             notify: {
@@ -148,8 +154,9 @@
         });
 
         grunt.registerTask('preTest', ['clean', 'ngtemplates', 'concat', 'less']);
-        grunt.registerTask('postTest', ['copy',  'notify']);
+        grunt.registerTask('postTest', ['copy:source', 'copy:general', 'notify']);
         grunt.registerTask('test', ['preTest', 'karma', 'postTest', 'watch:test']);
         grunt.registerTask('default', ['preTest', 'postTest', 'watch:default']);
+        grunt.registerTask('deploy', ['preTest', 'copy']);
     };
 }());
