@@ -102,8 +102,10 @@
                 },
                 deploy: {
                     files: [{
-                        src: 'public',
-                        dest: '~/html/projects/ttt'
+                        expand: true,
+                        cwd: 'public',
+                        src: '**/*',
+                        dest: process.env['HOME'] + 'html/projects/ttt/'
                     }]
                 }
             },
